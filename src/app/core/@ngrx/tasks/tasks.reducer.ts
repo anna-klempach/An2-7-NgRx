@@ -20,8 +20,7 @@ export const tasksReducer = createReducer(
       loaded: true
     };
   }),
-  on(TasksActions.getTasksError, (state, { error }) => {
-    console.log('GET_TASKS_ERROR action being handled!');
+  on(TasksActions.getTasksError, TasksActions.getTaskError, (state, { error }) => {
     return {
       ...state,
       loading: false,
@@ -30,7 +29,20 @@ export const tasksReducer = createReducer(
     };
   }),
   on(TasksActions.getTask, state => {
-    return { ...state };
+    return {
+      ...state,
+      loading: true,
+      loaded: false
+    };
+  }),
+  on(TasksActions.getTaskSuccess, (state, { task }) => {
+    const selectedTask = { ...task };
+    return {
+      ...state,
+      loading: false,
+      loaded: true,
+      selectedTask
+    };
   }),
   on(TasksActions.createTask, state => {
     return { ...state };

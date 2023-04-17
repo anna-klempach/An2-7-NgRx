@@ -1,48 +1,61 @@
-import { Component, type OnInit } from '@angular/core';
+import { Component, OnDestroy, type OnInit } from '@angular/core';
 import { ActivatedRoute, Router, type ParamMap } from '@angular/router';
-import { map, switchMap } from 'rxjs';
 
 import { TaskModel } from './../../models/task.model';
 import { TaskPromiseService } from './../../services';
+import { Store } from '@ngrx/store';
+import { Subject, takeUntil } from 'rxjs';
+import { tasksFeatureKey, type AppState, type TasksState } from './../../../core/@ngrx';
+import * as TasksActions from './../../../core/@ngrx/tasks/tasks.actions';
 
 @Component({
   templateUrl: './task-form.component.html',
   styleUrls: ['./task-form.component.css']
 })
-export class TaskFormComponent implements OnInit {
+export class TaskFormComponent implements OnInit, OnDestroy {
   task!: TaskModel;
+  private componentDestroyed$: Subject<void> = new Subject<void>();
 
   constructor(
     private taskPromiseService: TaskPromiseService,
     private router: Router,
-    private route: ActivatedRoute
-  ) {}
+    private route: ActivatedRoute,
+    private store: Store<AppState>
+  ) { }
+  ngOnDestroy(): void {
+    this.componentDestroyed$.next();
+    this.componentDestroyed$.complete();
+  }
 
   ngOnInit(): void {
     this.task = new TaskModel();
 
-    // it is not necessary to save subscription to route.paramMap
-    // when router destroys this component, it handles subscriptions automatically
-    const observer = {
-      next: (task: TaskModel) => (this.task = { ...task }),
-      error: (err: any) => console.log(err)
+    let observer: any = {
+      next: (tasksState: TasksState) => {
+        this.task = { ...tasksState.selectedTask } as TaskModel;
+      },
+      error(err: any) {
+        console.log(err);
+      },
+      complete() {
+        console.log('Stream is completed');
+      }
     };
-    this.route.paramMap
+    this.store.select(tasksFeatureKey)
       .pipe(
-        switchMap((params: ParamMap) => {
-             // notes about "!"
-             // params.get() returns string | null, but getTask takes string | number
-             // in this case taskID is NOT a path param and can not be null
-             if (params.has('taskID')) {
-                return this.taskPromiseService.getTask(params.get('taskID')!);
-             } else {
-                return Promise.resolve(undefined);
-             }
-        }),
-        // transform undefined => {}
-        map(el => el ? el : {} as TaskModel)
+        takeUntil(this.componentDestroyed$)
       )
       .subscribe(observer);
+    observer = {
+      ...observer,
+      next: (params: ParamMap) => {
+        const id = params.get('taskID');
+        if (id) {
+          this.store.dispatch(TasksActions.getTask({ taskID: +id }));
+        }
+      }
+    };
+    this.route.paramMap.subscribe(observer);
   }
 
   onSaveTask(): void {

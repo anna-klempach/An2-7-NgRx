@@ -15,6 +15,16 @@ export const getTask = createAction(
   '[Add/Edit Task Page (App)] GET_TASK',
   props<{ taskID: number }>()
 );
+
+export const getTaskSuccess = createAction(
+  '[Get Task Effect] GET_TASK_SUCCESS',
+  props<{ task: TaskModel }>()
+);
+export const getTaskError = createAction(
+  '[Get Task Effect] GET_TASK_ERROR',
+  props<{ error: Error | string | null }>()
+);
+
 export const createTask = createAction(
   '[Task Form Page] CREATE_TASK',
   props<{ task: TaskModel }>()

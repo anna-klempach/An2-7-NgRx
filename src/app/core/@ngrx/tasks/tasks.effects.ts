@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { type Action } from '@ngrx/store';
-import { type Observable, switchMap } from 'rxjs';
+import { type Observable, switchMap, map } from 'rxjs';
 import { TaskPromiseService } from './../../../tasks/services';
 import * as TasksActions from './tasks.actions';
 
@@ -32,4 +32,18 @@ export class TasksEffects {
       )
     )
   );
+
+  getTask$: Observable<Action> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TasksActions.getTask),
+      map(action => action.taskID),
+      switchMap(taskID =>
+        this.taskPromiseService
+          .getTask(taskID)
+          .then(task => TasksActions.getTaskSuccess({ task }))
+          .catch(error => TasksActions.getTaskError({ error }))
+      )
+    )
+  );
+
 }
