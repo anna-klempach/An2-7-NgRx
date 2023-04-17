@@ -47,8 +47,20 @@ export const tasksReducer = createReducer(
   on(TasksActions.createTask, state => {
     return { ...state };
   }),
-  on(TasksActions.updateTask, state => {
-    return { ...state };
+  on(TasksActions.updateTaskSuccess, (state, { task }) => {
+    const data = [...state.data];
+    const index = data.findIndex(t => t.id === task.id);
+    data[index] = { ...task };
+    return {
+      ...state,
+      data
+    };
+  }),
+  on(TasksActions.updateTaskError, (state, { error }) => {
+    return {
+      ...state,
+      error
+    };
   }),
   on(TasksActions.completeTask, (state, { task }) => {
     const id = task.id;

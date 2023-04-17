@@ -2,7 +2,6 @@ import { Component, OnDestroy, type OnInit } from '@angular/core';
 import { ActivatedRoute, Router, type ParamMap } from '@angular/router';
 
 import { TaskModel } from './../../models/task.model';
-import { TaskPromiseService } from './../../services';
 import { Store } from '@ngrx/store';
 import { Subject, takeUntil } from 'rxjs';
 import { tasksFeatureKey, type AppState, type TasksState } from './../../../core/@ngrx';
@@ -17,7 +16,6 @@ export class TaskFormComponent implements OnInit, OnDestroy {
   private componentDestroyed$: Subject<void> = new Subject<void>();
 
   constructor(
-    private taskPromiseService: TaskPromiseService,
     private router: Router,
     private route: ActivatedRoute,
     private store: Store<AppState>
@@ -61,10 +59,11 @@ export class TaskFormComponent implements OnInit, OnDestroy {
   onSaveTask(): void {
     const task = { ...this.task } as TaskModel;
 
-    const method = task.id ? 'updateTask' : 'createTask';
-    this.taskPromiseService[method](task)
-      .then(() => this.onGoBack())
-      .catch(err => console.log(err));
+    if (task.id) {
+      this.store.dispatch(TasksActions.updateTask({ task }));
+    } else {
+      this.store.dispatch(TasksActions.createTask({ task }));
+    }
   }
 
   onGoBack(): void {

@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { type Action } from '@ngrx/store';
-import { type Observable, switchMap, map } from 'rxjs';
+import { type Observable, switchMap, map, concatMap } from 'rxjs';
 import { TaskPromiseService } from './../../../tasks/services';
 import * as TasksActions from './tasks.actions';
+import { Router } from '@angular/router';
+import { type TaskModel } from 'src/app/tasks/models/task.model';
 
 @Injectable()
 export class TasksEffects {
 
-  constructor(private actions$: Actions, private taskPromiseService: TaskPromiseService) {
+  constructor(private actions$: Actions, private taskPromiseService: TaskPromiseService, private router: Router,) {
     console.log('[TASKS EFFECTS]');
   }
 
@@ -42,6 +44,21 @@ export class TasksEffects {
           .getTask(taskID)
           .then(task => TasksActions.getTaskSuccess({ task }))
           .catch(error => TasksActions.getTaskError({ error }))
+      )
+    )
+  );
+  updateTask$: Observable<Action> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TasksActions.updateTask),
+      map(action => action.task),
+      concatMap((task: TaskModel) =>
+        this.taskPromiseService
+          .updateTask(task)
+          .then((updatedTask: TaskModel) => {
+            this.router.navigate(['/home']);
+            return TasksActions.updateTaskSuccess({ task: updatedTask });
+          })
+          .catch(error => TasksActions.updateTaskError({ error }))
       )
     )
   );

@@ -33,6 +33,15 @@ export const updateTask = createAction(
   '[Task Form Page] UPDATE_TASK',
   props<{ task: TaskModel }>()
 );
+export const updateTaskSuccess = createAction(
+  '[Update Task Effect] UPDATE_TASK_SUCCESS',
+  props<{ task: TaskModel }>()
+);
+export const updateTaskError = createAction(
+  '[Update Task Effect] UPDATE_TASK_ERROR',
+  props<{ error: Error | string | null }>()
+);
+
 export const completeTask = createAction(
   '[Task List Page] COMPLETE_TASK',
   props<{ task: TaskModel }>()
