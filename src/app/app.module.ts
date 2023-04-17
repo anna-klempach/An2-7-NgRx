@@ -14,6 +14,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { SpinnerModule } from './widgets/spinner/spinner.module';
 import { AppComponent } from './app.component';
 import { httpInterceptorProviders } from './core/interceptors';
+import { RootStoreModule } from './core/@ngrx/root-store.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -24,7 +25,8 @@ import { httpInterceptorProviders } from './core/interceptors';
     LayoutModule,
     TasksModule,
     SpinnerModule.forRoot(),
-    AppRoutingModule
+    AppRoutingModule,
+    RootStoreModule
   ],
   providers: [httpInterceptorProviders],
   bootstrap: [AppComponent]

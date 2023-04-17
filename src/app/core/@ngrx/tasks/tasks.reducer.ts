@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { initialTasksState } from './tasks.state';
 import * as TasksActions from './tasks.actions';
-export const reducer = createReducer(
+export const tasksReducer = createReducer(
   initialTasksState,
   on(TasksActions.getTasks, state => {
     console.log('GET_TASKS action being handled!');
