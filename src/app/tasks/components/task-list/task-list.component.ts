@@ -38,9 +38,6 @@ export class TaskListComponent implements OnInit {
   }
 
   onDeleteTask(task: TaskModel) {
-    /*  this.taskPromiseService
-       .deleteTask(task)
-       .then(() => (this.tasks = this.taskPromiseService.getTasks()))
-       .catch(err => console.log(err)); */
+    this.store.dispatch(TasksActions.deleteTask({ task }));
   }
 }

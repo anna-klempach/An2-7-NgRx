@@ -58,3 +58,13 @@ export const deleteTask = createAction(
   '[Task List Page] DELETE_TASK',
   props<{ task: TaskModel }>()
 );
+
+export const deleteTaskSuccess = createAction(
+  '[Delete Task Effect] DELETE_TASK_SUCCESS',
+  props<{ task: TaskModel }>()
+);
+
+export const deleteTaskError = createAction(
+  '[Delete Task Effect] DELETE_TASK_ERROR',
+  props<{ error: Error | string | null }>()
+);

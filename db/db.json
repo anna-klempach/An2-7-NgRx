@@ -35,22 +35,6 @@
       "action": "Deploy",
       "priority": 2,
       "estHours": 8
-    },
-    {
-      "id": 7,
-      "action": "HK",
-      "priority": 2,
-      "estHours": 4,
-      "actHours": 0,
-      "done": false
-    },
-    {
-      "id": 8,
-      "action": "HK1",
-      "priority": 2,
-      "estHours": 3,
-      "actHours": 0,
-      "done": false
     }
   ],
   "users": [

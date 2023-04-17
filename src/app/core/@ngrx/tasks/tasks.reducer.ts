@@ -4,10 +4,10 @@ import * as TasksActions from './tasks.actions';
 import type { TaskModel } from './../../../tasks/models/task.model';
 export const tasksReducer = createReducer(
   initialTasksState,
-  on(TasksActions.getTasks, state => {
+  on(TasksActions.getTasks, (state) => {
     return {
       ...state,
-      loading: true
+      loading: true,
     };
   }),
   on(TasksActions.getTasksSuccess, (state, { tasks }) => {
@@ -17,7 +17,7 @@ export const tasksReducer = createReducer(
       data,
       loading: false,
       loaded: true,
-      selectedTask: null
+      selectedTask: null,
     };
   }),
   on(TasksActions.getTasksError, TasksActions.getTaskError, (state, { error }) => {
@@ -25,14 +25,14 @@ export const tasksReducer = createReducer(
       ...state,
       loading: false,
       loaded: false,
-      error
+      error,
     };
   }),
-  on(TasksActions.getTask, state => {
+  on(TasksActions.getTask, (state) => {
     return {
       ...state,
       loading: true,
-      loaded: false
+      loaded: false,
     };
   }),
   on(TasksActions.getTaskSuccess, (state, { task }) => {
@@ -41,37 +41,39 @@ export const tasksReducer = createReducer(
       ...state,
       loading: false,
       loaded: true,
-      selectedTask
+      selectedTask,
     };
-  }),
-  on(TasksActions.createTask, state => {
-    return { ...state };
   }),
   on(TasksActions.createTaskSuccess, (state, { task }) => {
     const data = [{ ...task }, ...state.data];
     return {
       ...state,
-      data
+      data,
     };
   }),
   on(TasksActions.updateTaskSuccess, (state, { task }) => {
     const data = [...state.data];
-    const index = data.findIndex(t => t.id === task.id);
+    const index = data.findIndex((t) => t.id === task.id);
     data[index] = { ...task };
     return {
       ...state,
-      data
+      data,
     };
   }),
-  on(TasksActions.updateTaskError, TasksActions.createTaskError, (state, { error }) => {
-    return {
-      ...state,
-      error
-    };
-  }),
+  on(
+    TasksActions.updateTaskError,
+    TasksActions.createTaskError,
+    TasksActions.deleteTaskError,
+    (state, { error }) => {
+      return {
+        ...state,
+        error,
+      };
+    }
+  ),
   on(TasksActions.completeTask, (state, { task }) => {
     const id = task.id;
-    const data = state.data.map(t => {
+    const data = state.data.map((t) => {
       if (t.id === id) {
         return { ...task, done: true } as TaskModel;
       }
@@ -79,12 +81,14 @@ export const tasksReducer = createReducer(
     });
     return {
       ...state,
-      data
+      data,
     };
-  })
-  ,
-  on(TasksActions.deleteTask, state => {
-    console.log('DELETE_TASK action being handled!');
-    return { ...state };
+  }),
+  on(TasksActions.deleteTaskSuccess, (state, { task }) => {
+    const data = state.data.filter((t) => t.id !== task.id);
+    return {
+      ...state,
+      data,
+    };
   })
 );
