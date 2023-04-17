@@ -9,12 +9,12 @@ import { SpinnerService } from './widgets';
 // @ngrx
 import { Store } from '@ngrx/store';
 import {
-  AppState,
   selectQueryParams,
   selectRouteParams,
   selectRouteData,
   selectUrl
 } from './core/@ngrx';
+import * as RouterActions from './core/@ngrx/router/router.actions';
 
 @Component({
   selector: 'app-root',
@@ -56,7 +56,9 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   onDisplayMessages(): void {
-    this.router.navigate([{ outlets: { messages: ['messages'] } }]);
+    this.store.dispatch(RouterActions.go({
+      path: [{ outlets: { messages: ['messages'] } }]
+    }));
     this.messagesService.isDisplayed = true;
   }
 

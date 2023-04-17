@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import * as RouterActions from './../router/router.actions';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { type Action } from '@ngrx/store';
 import { type Observable, of, switchMap, map, catchError, concatMap } from 'rxjs';
@@ -10,8 +10,7 @@ import * as UsersActions from './users.actions';
 export class UsersEffects {
   constructor(
     private actions$: Actions,
-    private userObservableService: UserObservableService,
-    private router: Router
+    private userObservableService: UserObservableService
   ) {
     console.log('[USERS EFFECTS]');
   }
@@ -33,7 +32,6 @@ export class UsersEffects {
       concatMap((user: UserModel) =>
         this.userObservableService.updateUser(user).pipe(
           map(updatedUser => {
-            this.router.navigate(['/users', { editedUserID: updatedUser.id }]);
             return UsersActions.updateUserSuccess({ user: updatedUser });
           }),
           catchError(error => of(UsersActions.updateUserError({ error })))
@@ -48,7 +46,6 @@ export class UsersEffects {
       concatMap((user: UserModel) =>
         this.userObservableService.createUser(user).pipe(
           map(createdUser => {
-            this.router.navigate(['/users']);
             return UsersActions.createUserSuccess({ user: createdUser });
           }),
           catchError(error => of(UsersActions.createUserError({ error })))
@@ -70,4 +67,25 @@ export class UsersEffects {
       )
     )
   );
+
+  createUserSuccess$: Observable<Action> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UsersActions.createUserSuccess),
+      map(action => {
+        const path = ['/users'];
+        return RouterActions.go({ path });
+      })
+    )
+  );
+  updateUserSuccess$: Observable<Action> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UsersActions.updateUserSuccess),
+      map(action => {
+        const { user: { id: userID } } = action;
+        const path = ['/users', { editedUserID: userID }];
+        return RouterActions.go({ path });
+      })
+    )
+  );
+
 }

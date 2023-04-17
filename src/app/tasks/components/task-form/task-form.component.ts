@@ -1,5 +1,5 @@
 import { Component, OnDestroy, type OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import * as RouterActions from './../../../core/@ngrx/router/router.actions';
 
 import { TaskModel } from './../../models/task.model';
 import { Store } from '@ngrx/store';
@@ -16,7 +16,6 @@ export class TaskFormComponent implements OnInit, OnDestroy {
   private componentDestroyed$: Subject<void> = new Subject<void>();
 
   constructor(
-    private router: Router,
     private store: Store
   ) { }
   ngOnDestroy(): void {
@@ -56,6 +55,8 @@ export class TaskFormComponent implements OnInit, OnDestroy {
   }
 
   onGoBack(): void {
-    this.router.navigate(['/home']);
+    this.store.dispatch(RouterActions.go({
+      path: ['/home']
+    }));;
   }
 }

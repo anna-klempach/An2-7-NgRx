@@ -1,10 +1,11 @@
 import { Component, type OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 
 import type { TaskModel } from './../../models/task.model';
 import { Store } from '@ngrx/store';
 import type { Observable } from 'rxjs';
-import { selectTasksData, selectTasksError, selectTasksState, type TasksState } from './../../../core/@ngrx';
+import { selectTasksData, selectTasksError } from './../../../core/@ngrx';
+
+import * as RouterActions from './../../../core/@ngrx/router/router.actions';
 import * as TasksActions from './../../../core/@ngrx/tasks/tasks.actions';
 @Component({
   templateUrl: './task-list.component.html',
@@ -15,7 +16,6 @@ export class TaskListComponent implements OnInit {
   tasksError$!: Observable<Error | string | null>;
 
   constructor(
-    private router: Router,
     private store: Store
   ) { }
 
@@ -26,8 +26,9 @@ export class TaskListComponent implements OnInit {
   }
 
   onCreateTask() {
-    const link = ['/add'];
-    this.router.navigate(link);
+    this.store.dispatch(RouterActions.go({
+      path: ['/add']
+    }));
   }
 
   onCompleteTask(task: TaskModel): void {
@@ -36,8 +37,7 @@ export class TaskListComponent implements OnInit {
   }
 
   onEditTask(task: TaskModel): void {
-    const link = ['/edit', task.id];
-    this.router.navigate(link);
+    this.store.dispatch(RouterActions.go({ path: ['/edit', task.id] }))
   }
 
   onDeleteTask(task: TaskModel) {

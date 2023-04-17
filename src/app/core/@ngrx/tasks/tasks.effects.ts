@@ -4,16 +4,16 @@ import {
     EffectNotification
 } from '@ngrx/effects';
 import { type Action } from '@ngrx/store';
-import { type Observable, switchMap, map, concatMap, takeUntil, tap } from 'rxjs';
+import { type Observable, switchMap, map, concatMap, tap } from 'rxjs';
 import { TaskPromiseService } from './../../../tasks/services';
 import * as TasksActions from './tasks.actions';
-import { Router } from '@angular/router';
 import { type TaskModel } from 'src/app/tasks/models/task.model';
+import * as RouterActions from './../router/router.actions';
 
 @Injectable()
 export class TasksEffects implements OnInitEffects, OnRunEffects {
 
-  constructor(private actions$: Actions, private taskPromiseService: TaskPromiseService, private router: Router,) {
+  constructor(private actions$: Actions, private taskPromiseService: TaskPromiseService) {
     console.log('[TASKS EFFECTS]');
   }
   // Implement this interface to dispatch a custom action after the effect has been added.
@@ -62,7 +62,6 @@ export class TasksEffects implements OnInitEffects, OnRunEffects {
         this.taskPromiseService
           .updateTask(task)
           .then((updatedTask: TaskModel) => {
-            this.router.navigate(['/home']);
             return TasksActions.updateTaskSuccess({ task: updatedTask });
           })
           .catch(error => TasksActions.updateTaskError({ error }))
@@ -77,7 +76,6 @@ export class TasksEffects implements OnInitEffects, OnRunEffects {
         this.taskPromiseService
           .createTask(task)
           .then((createdTask: TaskModel) => {
-            this.router.navigate(['/home']);
             return TasksActions.createTaskSuccess({ task: createdTask });
           })
           .catch(error => TasksActions.createTaskError({ error }))
@@ -101,5 +99,16 @@ export class TasksEffects implements OnInitEffects, OnRunEffects {
       )
     )
   );
+
+  createUpdateTaskSuccess$: Observable<Action> = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(TasksActions.createTaskSuccess, TasksActions.updateTaskSuccess),
+      map(action =>
+        RouterActions.go({
+          path: ['/home']
+        })
+      )
+    );
+  });
 
 }

@@ -1,6 +1,8 @@
 import { Component, type OnInit, type OnDestroy } from '@angular/core';
-import { Router, type NavigationExtras } from '@angular/router';
+import { type NavigationExtras } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
+import { Store } from '@ngrx/store';
+import * as RouterActions from './../../../core/@ngrx/router/router.actions';
 
 import { AuthService } from './../../../core';
 
@@ -13,7 +15,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   private unsubscribe: Subject<void> = new Subject();
 
-  constructor(public authService: AuthService, private router: Router) {}
+  constructor(public authService: AuthService, private store: Store) { }
 
   ngOnInit(): void {
     this.setMessage();
@@ -43,7 +45,10 @@ export class LoginComponent implements OnInit, OnDestroy {
           };
 
           // Redirect the user
-          this.router.navigate([redirect], navigationExtras);
+          this.store.dispatch(RouterActions.go({
+            path: [redirect],
+            extras: navigationExtras
+          }));
         }
       },
       error: (err: any) => console.log(err),

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Router, type Resolve } from '@angular/router';
+import { type Resolve } from '@angular/router';
 import { type Observable, of, EMPTY, catchError, take, switchMap, delay, finalize, tap } from 'rxjs';
 // NgRx
 import { Store } from '@ngrx/store';
@@ -7,6 +7,7 @@ import { selectSelectedUserByUrl } from './../../core/@ngrx';
 import * as UsersActions from './../../core/@ngrx/users/users.actions';
 import { UserModel } from './../models/user.model';
 import { SpinnerService } from './../../widgets';
+import * as RouterActions from './../../core/@ngrx/router/router.actions';
 
 @Injectable({
   providedIn: 'any'
@@ -14,7 +15,6 @@ import { SpinnerService } from './../../widgets';
 export class UserResolveGuard implements Resolve<UserModel> {
   constructor(
     private store: Store,
-    private router: Router,
     private spinner: SpinnerService
   ) { }
 
@@ -28,13 +28,17 @@ export class UserResolveGuard implements Resolve<UserModel> {
         if (user) {
           return of(user);
         } else {
-          this.router.navigate(['/users']);
+          this.store.dispatch(RouterActions.go({
+            path: ['/users']
+          }));;
           return EMPTY;
         }
       }),
       take(1),
       catchError(() => {
-        this.router.navigate(['/users']);
+        this.store.dispatch(RouterActions.go({
+          path: ['/users']
+        }));;
         // catchError MUST return observable
         return EMPTY;
       }),

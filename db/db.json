@@ -3,8 +3,8 @@
     {
       "id": 1,
       "action": "Estimate",
-      "priority": 1,
-      "estHours": 8,
+      "priority": 2,
+      "estHours": 3,
       "done": true
     },
     {
@@ -44,7 +44,7 @@
     {
       "id": 1,
       "firstName": "Anna",
-      "lastName": "Borisova"
+      "lastName": "Borisova123"
     },
     {
       "id": 2,

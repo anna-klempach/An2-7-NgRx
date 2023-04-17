@@ -7,7 +7,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from './../../../environments/environment';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreRouterConnectingModule, RouterState } from '@ngrx/router-store';
-import { routerReducers, CustomSerializer } from './router';
+import { routerReducers, CustomSerializer, RouterEffects } from './router';
 import { UsersStoreModule } from './users/users-store.module';
 
 @NgModule({
@@ -31,7 +31,7 @@ import { UsersStoreModule } from './users/users-store.module';
       routerState: RouterState.Minimal,
       serializer: CustomSerializer // has a priority over routerState
     }),
-    EffectsModule.forRoot([]),
+    EffectsModule.forRoot([RouterEffects]),
     TasksStoreModule,
     // Instrumentation must be imported after importing StoreModule (config is optional)
     !environment.production ? StoreDevtoolsModule.instrument() : [],

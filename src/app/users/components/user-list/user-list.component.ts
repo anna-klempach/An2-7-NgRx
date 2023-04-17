@@ -1,5 +1,4 @@
 import { Component, type OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 
 import { Store } from '@ngrx/store';
 import * as UsersActions from './../../../core/@ngrx/users/users.actions';
@@ -8,7 +7,7 @@ import { type Observable, type Subscription } from 'rxjs';
 import { AutoUnsubscribe } from './../../../core/decorators';
 
 
-import { UserObservableService } from './../../services';
+import * as RouterActions from './../../../core/@ngrx/router/router.actions';
 import { type UserModel } from './../../models/user.model';
 
 @Component({
@@ -23,7 +22,6 @@ export class UserListComponent implements OnInit {
   private editedUser!: UserModel;
 
   constructor(
-    private router: Router,
     private store: Store
   ) { }
 
@@ -43,11 +41,9 @@ export class UserListComponent implements OnInit {
   }
 
   onEditUser(user: UserModel): void {
-    const link = ['/users/edit', user.id];
-    this.router.navigate(link);
-    // or
-    // const link = ['edit', user.id];
-    // this.router.navigate(link, {relativeTo: this.route});
+    this.store.dispatch(RouterActions.go({
+      path: ['/users/edit', user.id]
+    }));
   }
 
   isEdited(user: UserModel): boolean {
