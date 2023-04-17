@@ -1,6 +1,16 @@
 import { createAction, props } from '@ngrx/store';
 import type { TaskModel } from './../../../tasks/models/task.model';
 export const getTasks = createAction('[Task List Page (App)] GET_TASKS');
+
+export const getTasksSuccess = createAction(
+  '[Get Tasks Effect] GET_TASKS_SUCCEESS',
+  props<{ tasks: TaskModel[] }>()
+);
+export const getTasksError = createAction(
+  '[Get Tasks Effect] GET_TASKS_ERROR',
+  props<{ error: Error | string | null }>()
+);
+
 export const getTask = createAction(
   '[Add/Edit Task Page (App)] GET_TASK',
   props<{ taskID: number }>()
