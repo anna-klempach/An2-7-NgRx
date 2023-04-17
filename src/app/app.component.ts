@@ -1,10 +1,20 @@
 import { Component, type OnInit, type OnDestroy } from '@angular/core';
 import { type ActivatedRoute, type RouterOutlet, type Event, type Data, Router, NavigationEnd, NavigationStart } from '@angular/router';
 import { Title, Meta } from '@angular/platform-browser';
-import { type Subscription, filter, map, switchMap } from 'rxjs';
+import { type Subscription, filter, map, switchMap, merge, tap } from 'rxjs';
 
 import { MessagesService, CustomPreloadingStrategyService } from './core';
 import { SpinnerService } from './widgets';
+
+// @ngrx
+import { Store } from '@ngrx/store';
+import {
+  AppState,
+  selectQueryParams,
+  selectRouteParams,
+  selectRouteData,
+  selectUrl
+} from './core/@ngrx';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +30,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private router: Router,
     public spinnerService: SpinnerService,
     private preloadingStrategy: CustomPreloadingStrategyService,
-    private metaService: Meta
+    private metaService: Meta,
+    private store: Store
   ) { }
 
   ngOnInit(): void {
@@ -30,6 +41,13 @@ export class AppComponent implements OnInit, OnDestroy {
     // );
     // this.setPageTitles();
     this.setMessageServiceOnRefresh();
+    // Router Selectors Demo
+    const url$ = this.store.select(selectUrl);
+    const queryParams$ = this.store.select(selectQueryParams);
+    const routeParams$ = this.store.select(selectRouteParams);
+    const routeData$ = this.store.select(selectRouteData);
+    const source$ = merge(url$, queryParams$, routeParams$, routeData$);
+    source$.pipe(tap(val => console.log(val))).subscribe();
   }
 
   ngOnDestroy(): void {
