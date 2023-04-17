@@ -1,7 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { initialTasksState } from './tasks.state';
 import * as TasksActions from './tasks.actions';
-import type { TaskModel } from './../../../tasks/models/task.model';
 export const tasksReducer = createReducer(
   initialTasksState,
   on(TasksActions.getTasks, (state) => {
@@ -17,31 +16,14 @@ export const tasksReducer = createReducer(
       data,
       loading: false,
       loaded: true,
-      selectedTask: null,
     };
   }),
-  on(TasksActions.getTasksError, TasksActions.getTaskError, (state, { error }) => {
+  on(TasksActions.getTasksError, (state, { error }) => {
     return {
       ...state,
       loading: false,
       loaded: false,
       error,
-    };
-  }),
-  on(TasksActions.getTask, (state) => {
-    return {
-      ...state,
-      loading: true,
-      loaded: false,
-    };
-  }),
-  on(TasksActions.getTaskSuccess, (state, { task }) => {
-    const selectedTask = { ...task };
-    return {
-      ...state,
-      loading: false,
-      loaded: true,
-      selectedTask,
     };
   }),
   on(TasksActions.createTaskSuccess, (state, { task }) => {

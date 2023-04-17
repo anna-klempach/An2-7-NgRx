@@ -1,10 +1,10 @@
 import { Component, OnDestroy, type OnInit } from '@angular/core';
-import { ActivatedRoute, Router, type ParamMap } from '@angular/router';
+import { Router } from '@angular/router';
 
 import { TaskModel } from './../../models/task.model';
 import { Store } from '@ngrx/store';
 import { Subject, takeUntil } from 'rxjs';
-import { selectSelectedTask, selectTasksState, type TasksState } from './../../../core/@ngrx';
+import { selectSelectedTaskByUrl } from './../../../core/@ngrx';
 import * as TasksActions from './../../../core/@ngrx/tasks/tasks.actions';
 
 @Component({
@@ -17,7 +17,6 @@ export class TaskFormComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
     private store: Store
   ) { }
   ngOnDestroy(): void {
@@ -28,14 +27,9 @@ export class TaskFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.task = new TaskModel();
 
-    let observer: any = {
+    const observer: any = {
       next: (task: TaskModel) => {
-        if (task) {
-          this.task = { ...task };
-        } else {
-          this.task = new TaskModel();
-        }
-
+        this.task = { ...task };
       },
       error(err: any) {
         console.log(err);
@@ -44,21 +38,11 @@ export class TaskFormComponent implements OnInit, OnDestroy {
         console.log('Stream is completed');
       }
     };
-    this.store.select(selectSelectedTask)
+    this.store.select(selectSelectedTaskByUrl)
       .pipe(
         takeUntil(this.componentDestroyed$)
       )
       .subscribe(observer);
-    observer = {
-      ...observer,
-      next: (params: ParamMap) => {
-        const id = params.get('taskID');
-        if (id) {
-          this.store.dispatch(TasksActions.getTask({ taskID: +id }));
-        }
-      }
-    };
-    this.route.paramMap.subscribe(observer);
   }
 
   onSaveTask(): void {

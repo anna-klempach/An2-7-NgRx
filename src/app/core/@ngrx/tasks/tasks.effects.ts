@@ -54,19 +54,6 @@ export class TasksEffects implements OnInitEffects, OnRunEffects {
       )
     )
   );
-
-  getTask$: Observable<Action> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(TasksActions.getTask),
-      map(action => action.taskID),
-      switchMap(taskID =>
-        this.taskPromiseService
-          .getTask(taskID)
-          .then(task => TasksActions.getTaskSuccess({ task }))
-          .catch(error => TasksActions.getTaskError({ error }))
-      )
-    )
-  );
   updateTask$: Observable<Action> = createEffect(() =>
     this.actions$.pipe(
       ofType(TasksActions.updateTask, TasksActions.completeTask),
