@@ -1,6 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { initialTasksState } from './tasks.state';
 import * as TasksActions from './tasks.actions';
+import type { TaskModel } from './../../../tasks/models/task.model';
 export const tasksReducer = createReducer(
   initialTasksState,
   on(TasksActions.getTasks, state => {
@@ -19,10 +20,21 @@ export const tasksReducer = createReducer(
     console.log('UPDATE_TASK action being handled!');
     return { ...state };
   }),
-  on(TasksActions.completeTask, state => {
+  on(TasksActions.completeTask, (state, { task }) => {
     console.log('COMPLETE_TASK action being handled!');
-    return { ...state };
-  }),
+    const id = task.id;
+    const data = state.data.map(t => {
+      if (t.id === id) {
+        return { ...task, done: true } as TaskModel;
+      }
+      return t;
+    });
+    return {
+      ...state,
+      data
+    };
+  })
+  ,
   on(TasksActions.deleteTask, state => {
     console.log('DELETE_TASK action being handled!');
     return { ...state };

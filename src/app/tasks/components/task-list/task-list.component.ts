@@ -6,7 +6,7 @@ import type { TaskModel } from './../../models/task.model';
 import { Store } from '@ngrx/store';
 import type { Observable } from 'rxjs';
 import { type TasksState, type AppState, tasksFeatureKey } from './../../../core/@ngrx';
-
+import * as TasksActions from './../../../core/@ngrx/tasks/tasks.actions';
 @Component({
   templateUrl: './task-list.component.html',
   styleUrls: ['./task-list.component.css']
@@ -32,7 +32,7 @@ export class TaskListComponent implements OnInit {
   }
 
   onCompleteTask(task: TaskModel): void {
-    this.updateTask(task).catch(err => console.log(err));
+    this.store.dispatch(TasksActions.completeTask({ task }));
   }
 
   onEditTask(task: TaskModel): void {
