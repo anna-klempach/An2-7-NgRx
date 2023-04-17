@@ -20,7 +20,7 @@ export class TasksEffects implements OnInitEffects, OnRunEffects {
   // You can listen to this action in the rest of the application
   // to execute something after the effect is registered.
   ngrxOnInitEffects(): Action {
-    console.log('ngrxOnInitEffects is called');
+    //console.log('ngrxOnInitEffects is called');
     return { type: '[TasksEffects]: Init' };
   }
   // Implement the OnRunEffects interface to control the lifecycle
@@ -33,7 +33,6 @@ export class TasksEffects implements OnInitEffects, OnRunEffects {
       //takeUntil(this.actions$.pipe(ofType(TasksActions.createTask)))
     );
   }
-
 
   getTasks$: Observable<Action> = createEffect(() =>
     this.actions$.pipe(

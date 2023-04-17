@@ -4,7 +4,7 @@ import { ActivatedRoute, Router, type ParamMap } from '@angular/router';
 import { TaskModel } from './../../models/task.model';
 import { Store } from '@ngrx/store';
 import { Subject, takeUntil } from 'rxjs';
-import { tasksFeatureKey, type AppState, type TasksState } from './../../../core/@ngrx';
+import { selectTasksState, type TasksState } from './../../../core/@ngrx';
 import * as TasksActions from './../../../core/@ngrx/tasks/tasks.actions';
 
 @Component({
@@ -18,7 +18,7 @@ export class TaskFormComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private store: Store<AppState>
+    private store: Store
   ) { }
   ngOnDestroy(): void {
     this.componentDestroyed$.next();
@@ -43,7 +43,7 @@ export class TaskFormComponent implements OnInit, OnDestroy {
         console.log('Stream is completed');
       }
     };
-    this.store.select(tasksFeatureKey)
+    this.store.select(selectTasksState)
       .pipe(
         takeUntil(this.componentDestroyed$)
       )

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import type { TaskModel } from './../../models/task.model';
 import { Store } from '@ngrx/store';
 import type { Observable } from 'rxjs';
-import { type TasksState, type AppState, tasksFeatureKey } from './../../../core/@ngrx';
+import { selectTasksState, type TasksState } from './../../../core/@ngrx';
 import * as TasksActions from './../../../core/@ngrx/tasks/tasks.actions';
 @Component({
   templateUrl: './task-list.component.html',
@@ -15,11 +15,11 @@ export class TaskListComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private store: Store<AppState>
+    private store: Store
   ) { }
 
   ngOnInit(): void {
-    this.tasksState$ = this.store.select(tasksFeatureKey);
+    this.tasksState$ = this.store.select(selectTasksState);
     this.store.dispatch(TasksActions.getTasks());
   }
 

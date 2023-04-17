@@ -4,23 +4,26 @@
       "id": 1,
       "action": "Estimate123",
       "priority": 1,
-      "estHours": 8
+      "estHours": 8,
+      "done": true
     },
     {
       "id": 2,
       "action": "Create",
       "priority": 2,
-      "estHours": 8
+      "estHours": 8,
+      "done": true
     },
     {
       "id": 3,
       "action": "Edit",
       "priority": 3,
-      "estHours": 4
+      "estHours": 4,
+      "done": true
     },
     {
       "id": 4,
-      "action": "Delete",
+      "action": "Delete123",
       "priority": 3,
       "estHours": 2
     },
