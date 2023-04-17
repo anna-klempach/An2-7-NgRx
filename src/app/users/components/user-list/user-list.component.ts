@@ -1,6 +1,12 @@
 import { Component, type OnInit } from '@angular/core';
-import { Router, ActivatedRoute, type ParamMap } from '@angular/router';
-import { type Observable, EMPTY, switchMap } from 'rxjs';
+import { Router } from '@angular/router';
+
+import { Store } from '@ngrx/store';
+import * as UsersActions from './../../../core/@ngrx/users/users.actions';
+import { selectUsers, selectUsersError, selectEditedUser } from './../../../core/@ngrx';
+import { type Observable, type Subscription } from 'rxjs';
+import { AutoUnsubscribe } from './../../../core/decorators';
+
 
 import { UserObservableService } from './../../services';
 import { type UserModel } from './../../models/user.model';
@@ -9,39 +15,31 @@ import { type UserModel } from './../../models/user.model';
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.css']
 })
+@AutoUnsubscribe('subscription')
 export class UserListComponent implements OnInit {
   users$!: Observable<Array<UserModel>>;
-
+  usersError$!: Observable<Error | string | null>;
+  private subscription!: Subscription;
   private editedUser!: UserModel;
 
   constructor(
-    private userObservableService: UserObservableService,
     private router: Router,
-    private route: ActivatedRoute
-  ) {}
+    private store: Store
+  ) { }
 
   ngOnInit(): void {
-    this.users$ = this.userObservableService.getUsers();
-
-    // listen editedUserID from UserFormComponent
-    const observer = {
-      next: (user: UserModel) => {
-        this.editedUser = { ...user };
+    this.users$ = this.store.select(selectUsers);
+    this.usersError$ = this.store.select(selectUsersError);
+    this.store.dispatch(UsersActions.getUsers());
+    this.subscription = this.store.select(selectEditedUser).subscribe({
+      next: (user: UserModel | null) => {
+        this.editedUser = { ...user } as UserModel;
         console.log(
           `Last time you edited user ${JSON.stringify(this.editedUser)}`
         );
       },
-      error: (err: any) => console.log(err)
-    };
-    this.route.paramMap
-      .pipe(
-        switchMap((params: ParamMap) => {
-          return params.has('editedUserID')
-            ? this.userObservableService.getUser(params.get('editedUserID')!)
-            : EMPTY;
-        })
-      )
-      .subscribe(observer);
+      error: err => console.log(err)
+    });
   }
 
   onEditUser(user: UserModel): void {
@@ -60,7 +58,7 @@ export class UserListComponent implements OnInit {
   }
 
   onDeleteUser(user: UserModel): void {
-    this.users$ = this.userObservableService.deleteUser(user);
+    this.store.dispatch(UsersActions.deleteUser({ user }));
   }
 
   trackByFn(index: number, user: UserModel): number | null {

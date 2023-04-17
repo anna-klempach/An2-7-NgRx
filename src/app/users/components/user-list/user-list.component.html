@@ -1,7 +1,9 @@
 <app-user
-  *ngFor='let user of users$ | async; trackBy: trackByFn'
+  *ngFor="let user of users$ | async; trackBy: trackByFn"
   [user]="user"
   [class.edited]="isEdited(user)"
   (editUser)="onEditUser($event)"
-  (deleteUser)="onDeleteUser($event)">
+  (deleteUser)="onDeleteUser($event)"
+>
 </app-user>
+<p *ngIf="usersError$ | async as errorMessage">{{ errorMessage }}</p>
