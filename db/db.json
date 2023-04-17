@@ -2,7 +2,7 @@
   "tasks": [
     {
       "id": 1,
-      "action": "Estimate123",
+      "action": "Estimate",
       "priority": 1,
       "estHours": 8,
       "done": true
@@ -11,7 +11,7 @@
       "id": 2,
       "action": "Create",
       "priority": 2,
-      "estHours": 8,
+      "estHours": 3,
       "done": true
     },
     {
@@ -23,7 +23,7 @@
     },
     {
       "id": 4,
-      "action": "Delete123",
+      "action": "Delete",
       "priority": 3,
       "estHours": 2
     },
