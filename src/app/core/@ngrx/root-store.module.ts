@@ -2,6 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StoreModule } from '@ngrx/store';
 import { TasksStoreModule } from './tasks/tasks-store.module';
+import { metaReducers } from './meta-reducers';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from './../../../environments/environment';
 
 
 
@@ -10,6 +13,7 @@ import { TasksStoreModule } from './tasks/tasks-store.module';
   imports: [
     CommonModule,
     StoreModule.forRoot({}, {
+      metaReducers,
       // All checks will automatically be disabled in production builds
       runtimeChecks: {
         strictStateImmutability: true, // default value is true
@@ -20,7 +24,10 @@ import { TasksStoreModule } from './tasks/tasks-store.module';
         strictActionTypeUniqueness: true // default value is false
       }
     }),
-    TasksStoreModule
+    TasksStoreModule,
+    // Instrumentation must be imported after importing StoreModule (config is optional)
+    !environment.production ? StoreDevtoolsModule.instrument() : [],
+
   ]
 })
 export class RootStoreModule { }
