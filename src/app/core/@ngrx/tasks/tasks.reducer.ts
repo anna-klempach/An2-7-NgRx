@@ -71,19 +71,6 @@ export const tasksReducer = createReducer(
       };
     }
   ),
-  on(TasksActions.completeTask, (state, { task }) => {
-    const id = task.id;
-    const data = state.data.map((t) => {
-      if (t.id === id) {
-        return { ...task, done: true } as TaskModel;
-      }
-      return t;
-    });
-    return {
-      ...state,
-      data,
-    };
-  }),
   on(TasksActions.deleteTaskSuccess, (state, { task }) => {
     const data = state.data.filter((t) => t.id !== task.id);
     return {
