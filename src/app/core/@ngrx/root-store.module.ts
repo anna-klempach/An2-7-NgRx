@@ -5,7 +5,7 @@ import { TasksStoreModule } from './tasks/tasks-store.module';
 import { metaReducers } from './meta-reducers';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from './../../../environments/environment';
-
+import { EffectsModule } from '@ngrx/effects';
 
 
 @NgModule({
@@ -24,6 +24,7 @@ import { environment } from './../../../environments/environment';
         strictActionTypeUniqueness: true // default value is false
       }
     }),
+    EffectsModule.forRoot([]),
     TasksStoreModule,
     // Instrumentation must be imported after importing StoreModule (config is optional)
     !environment.production ? StoreDevtoolsModule.instrument() : [],

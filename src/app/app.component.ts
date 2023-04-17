@@ -21,7 +21,7 @@ export class AppComponent implements OnInit, OnDestroy {
     public spinnerService: SpinnerService,
     private preloadingStrategy: CustomPreloadingStrategyService,
     private metaService: Meta
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // console.log(
@@ -46,7 +46,7 @@ export class AppComponent implements OnInit, OnDestroy {
    * @param $event - component instance
    */
   onActivate($event: any, routerOutlet: RouterOutlet): void {
-    console.log('Activated Component', $event, routerOutlet);
+    //console.log('Activated Component', $event, routerOutlet);
     // another way to set titles
     this.titleService.setTitle(routerOutlet.activatedRouteData['title']);
     this.metaService.addTags(routerOutlet.activatedRouteData['meta']);
