@@ -11,13 +11,13 @@ export const tasksReducer = createReducer(
     };
   }),
   on(TasksActions.getTasksSuccess, (state, { tasks }) => {
-    console.log('GET_TASKS_SUCCESS action being handled!');
     const data = [...tasks];
     return {
       ...state,
       data,
       loading: false,
-      loaded: true
+      loaded: true,
+      selectedTask: null
     };
   }),
   on(TasksActions.getTasksError, TasksActions.getTaskError, (state, { error }) => {
@@ -47,6 +47,13 @@ export const tasksReducer = createReducer(
   on(TasksActions.createTask, state => {
     return { ...state };
   }),
+  on(TasksActions.createTaskSuccess, (state, { task }) => {
+    const data = [...state.data, { ...task }];
+    return {
+      ...state,
+      data
+    };
+  }),
   on(TasksActions.updateTaskSuccess, (state, { task }) => {
     const data = [...state.data];
     const index = data.findIndex(t => t.id === task.id);
@@ -56,7 +63,7 @@ export const tasksReducer = createReducer(
       data
     };
   }),
-  on(TasksActions.updateTaskError, (state, { error }) => {
+  on(TasksActions.updateTaskError, TasksActions.createTaskError, (state, { error }) => {
     return {
       ...state,
       error

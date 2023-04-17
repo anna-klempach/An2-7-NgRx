@@ -29,6 +29,14 @@ export const createTask = createAction(
   '[Task Form Page] CREATE_TASK',
   props<{ task: TaskModel }>()
 );
+export const createTaskSuccess = createAction(
+  '[Create Task Effect] CREATE_TASK_SUCCESS',
+  props<{ task: TaskModel }>()
+);
+export const createTaskError = createAction(
+  '[Create Task Effect] CREATE_TASK_ERROR',
+  props<{ error: Error | string | null }>()
+);
 export const updateTask = createAction(
   '[Task Form Page] UPDATE_TASK',
   props<{ task: TaskModel }>()
