@@ -48,7 +48,7 @@ export const tasksReducer = createReducer(
     return { ...state };
   }),
   on(TasksActions.createTaskSuccess, (state, { task }) => {
-    const data = [...state.data, { ...task }];
+    const data = [{ ...task }, ...state.data];
     return {
       ...state,
       data
