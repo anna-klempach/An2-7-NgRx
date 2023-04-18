@@ -28,7 +28,6 @@ export class UserListComponent implements OnInit {
   ngOnInit(): void {
     this.users$ = this.store.select(selectUsers);
     this.usersError$ = this.store.select(selectUsersError);
-    this.store.dispatch(UsersActions.getUsers());
     this.subscription = this.store.select(selectEditedUser).subscribe({
       next: (user: UserModel | null) => {
         this.editedUser = { ...user } as UserModel;

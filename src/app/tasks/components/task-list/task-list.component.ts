@@ -22,7 +22,6 @@ export class TaskListComponent implements OnInit {
   ngOnInit(): void {
     this.tasks$ = this.store.select(selectTasksData);
     this.tasksError$ = this.store.select(selectTasksError);
-    this.store.dispatch(TasksActions.getTasks());
   }
 
   onCreateTask() {

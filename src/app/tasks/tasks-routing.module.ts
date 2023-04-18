@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { type MetaDefinition } from '@angular/platform-browser';
 import { type Routes, RouterModule } from '@angular/router';
+import { TasksStatePreloadingGuard, TaskExistsGuard } from './guards';
 
 import { TaskListComponent, TaskFormComponent } from './components';
 
@@ -19,6 +20,7 @@ const routes: Routes = [
   {
     path: 'home',
     component: TaskListComponent,
+    canActivate: [TasksStatePreloadingGuard],
     data: {
       title: 'Task Manager',
       meta: metaTags
@@ -30,7 +32,8 @@ const routes: Routes = [
   },
   {
     path: 'edit/:taskID',
-    component: TaskFormComponent
+    component: TaskFormComponent,
+    canActivate: [TaskExistsGuard]
   }
 ];
 
@@ -38,4 +41,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class TasksRoutingModule {}
+export class TasksRoutingModule { }
