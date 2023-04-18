@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { initialTasksState } from './tasks.state';
+import { adapter, initialTasksState } from './tasks.state';
 import * as TasksActions from './tasks.actions';
 export const tasksReducer = createReducer(
   initialTasksState,
@@ -10,13 +10,7 @@ export const tasksReducer = createReducer(
     };
   }),
   on(TasksActions.getTasksSuccess, (state, { tasks }) => {
-    const data = [...tasks];
-    return {
-      ...state,
-      data,
-      loading: false,
-      loaded: true,
-    };
+    return adapter.setAll(tasks, { ...state, loading: false, loaded: true });
   }),
   on(TasksActions.getTasksError, (state, { error }) => {
     return {
@@ -27,20 +21,10 @@ export const tasksReducer = createReducer(
     };
   }),
   on(TasksActions.createTaskSuccess, (state, { task }) => {
-    const data = [{ ...task }, ...state.data];
-    return {
-      ...state,
-      data,
-    };
+    return adapter.addOne(task, state);
   }),
   on(TasksActions.updateTaskSuccess, (state, { task }) => {
-    const data = [...state.data];
-    const index = data.findIndex((t) => t.id === task.id);
-    data[index] = { ...task };
-    return {
-      ...state,
-      data,
-    };
+    return adapter.updateOne({ id: task.id!, changes: task }, state);
   }),
   on(
     TasksActions.updateTaskError,
@@ -54,10 +38,6 @@ export const tasksReducer = createReducer(
     }
   ),
   on(TasksActions.deleteTaskSuccess, (state, { task }) => {
-    const data = state.data.filter((t) => t.id !== task.id);
-    return {
-      ...state,
-      data,
-    };
+    return adapter.removeOne(task.id!, state);
   })
 );
