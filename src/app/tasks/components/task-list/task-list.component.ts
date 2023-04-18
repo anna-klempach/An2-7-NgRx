@@ -1,12 +1,10 @@
 import { Component, type OnInit } from '@angular/core';
 
 import type { TaskModel } from './../../models/task.model';
-import { Store } from '@ngrx/store';
-import type { Observable } from 'rxjs';
-import { selectTasksData, selectTasksError } from './../../../core/@ngrx';
 
-import * as RouterActions from './../../../core/@ngrx/router/router.actions';
-import * as TasksActions from './../../../core/@ngrx/tasks/tasks.actions';
+import type { Observable } from 'rxjs';
+
+import { TasksFacade } from './../../../core/@ngrx';
 @Component({
   templateUrl: './task-list.component.html',
   styleUrls: ['./task-list.component.css']
@@ -16,30 +14,28 @@ export class TaskListComponent implements OnInit {
   tasksError$!: Observable<Error | string | null>;
 
   constructor(
-    private store: Store
+    private tasksFacade: TasksFacade
   ) { }
 
   ngOnInit(): void {
-    this.tasks$ = this.store.select(selectTasksData);
-    this.tasksError$ = this.store.select(selectTasksError);
+    this.tasks$ = this.tasksFacade.tasks$;
+    this.tasksError$ = this.tasksFacade.tasksError$;
   }
 
   onCreateTask() {
-    this.store.dispatch(RouterActions.go({
-      path: ['/add']
-    }));
+    this.tasksFacade.goTo({ path: ['/add'] });
   }
 
   onCompleteTask(task: TaskModel): void {
     const taskToComplete: TaskModel = { ...task, done: true };
-    this.store.dispatch(TasksActions.completeTask({ task: taskToComplete }));
+    this.tasksFacade.updateTask({ task: taskToComplete });
   }
 
   onEditTask(task: TaskModel): void {
-    this.store.dispatch(RouterActions.go({ path: ['/edit', task.id] }))
+    this.tasksFacade.goTo({ path: ['/edit', task.id] });
   }
 
   onDeleteTask(task: TaskModel) {
-    this.store.dispatch(TasksActions.deleteTask({ task }));
+    this.tasksFacade.deleteTask({ task: { ...task } });
   }
 }
