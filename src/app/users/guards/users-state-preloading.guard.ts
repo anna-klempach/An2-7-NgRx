@@ -1,24 +1,26 @@
 import { Injectable } from '@angular/core';
-import { Store } from '@ngrx/store';
 import { type CanActivate } from '@angular/router';
 import { type Observable, of, catchError, take, tap } from 'rxjs';
-import { selectUsersLoaded } from './../../core/@ngrx';
-import * as UsersActions from './../../core/@ngrx/users/users.actions';
+import { EntityServices, EntityCollectionService } from '@ngrx/data';
+import { UserModel } from '../models/user.model';
 @Injectable({
   providedIn: 'any'
 })
 export class UsersStatePreloadingGuard implements CanActivate {
-  constructor(private store: Store) { }
+  private userService!: EntityCollectionService<UserModel>;
+  constructor(entitytServices: EntityServices) {
+    this.userService = entitytServices.getEntityCollectionService('User');
+  }
   canActivate(): Observable<boolean> {
     return this.checkStore().pipe(
       catchError(() => of(false))
     );
   }
   private checkStore(): Observable<boolean> {
-    return this.store.select(selectUsersLoaded).pipe(
+    return this.userService.loaded$.pipe(
       tap((loaded: boolean) => {
         if (!loaded) {
-          this.store.dispatch(UsersActions.getUsers());
+          this.userService.getAll();
         }
       }),
       take(1)

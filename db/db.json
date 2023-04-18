@@ -30,7 +30,7 @@
     {
       "id": 5,
       "action": "Build",
-      "priority": 1,
+      "priority": 2,
       "estHours": 4
     },
     {
@@ -40,7 +40,7 @@
       "estHours": 8
     }
   ],
-  "users": [
+  "user": [
     {
       "id": 1,
       "firstName": "Anna",

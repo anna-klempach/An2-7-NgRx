@@ -1,9 +1,9 @@
 import { Component, type OnInit } from '@angular/core';
+import { EntityServices, EntityCollectionService } from '@ngrx/data';
+import { selectEditedUser } from './../../../core/@ngrx/data/entity-store.module';
 
 import { Store } from '@ngrx/store';
-import * as UsersActions from './../../../core/@ngrx/users/users.actions';
-import { selectUsers, selectUsersError, selectEditedUser } from './../../../core/@ngrx';
-import { type Observable, type Subscription } from 'rxjs';
+import { map, type Observable, type Subscription } from 'rxjs';
 import { AutoUnsubscribe } from './../../../core/decorators';
 
 
@@ -20,14 +20,23 @@ export class UserListComponent implements OnInit {
   usersError$!: Observable<Error | string | null>;
   private subscription!: Subscription;
   private editedUser!: UserModel;
+  private userService!: EntityCollectionService<UserModel>;
 
   constructor(
-    private store: Store
-  ) { }
+    private store: Store, entitytServices: EntityServices
+  ) {
+    // get service for the entity User
+    this.userService = entitytServices.getEntityCollectionService('User');
+  }
 
   ngOnInit(): void {
-    this.users$ = this.store.select(selectUsers);
-    this.usersError$ = this.store.select(selectUsersError);
+    // use built-in selector
+    this.users$ = this.userService.entities$;
+    // use built-in selector with transformation
+    // error is in EntityAction
+    this.usersError$ = this.userService.errors$.pipe(
+      map(action => action.payload.error!)
+    );
     this.subscription = this.store.select(selectEditedUser).subscribe({
       next: (user: UserModel | null) => {
         this.editedUser = { ...user } as UserModel;
@@ -53,7 +62,8 @@ export class UserListComponent implements OnInit {
   }
 
   onDeleteUser(user: UserModel): void {
-    this.store.dispatch(UsersActions.deleteUser({ user }));
+    // use service to dispatch EntitytAction
+    this.userService.delete(user.id!);
   }
 
   trackByFn(index: number, user: UserModel): number | null {
