@@ -10,4 +10,7 @@
     (deleteTask)="onDeleteTask($event)"
   >
   </app-task>
+  <div>
+    <img *ngFor="let image of images$ | async" [src]="image.download_url" />
+  </div>
 </div>
